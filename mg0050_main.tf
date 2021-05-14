@@ -16,7 +16,7 @@ provider "aws" {
 }
 
 # VPC anlegen
-resource "aws_vpc" "mg0050_vpc_01" {
+resource "aws_vpc" "mg0050_vpc" {
   cidr_block = var.cidr
   enable_dns_support = "true" #gives you an internal domain name
   enable_dns_hostnames = "true" #gives you an internal host name    

@@ -4,7 +4,7 @@ variable "region" {
 }
 variable "zone1" {
   description = "Zone 1"
-  default = "eu-central-1a"
+  default = "eu-central-1b"
 }
 variable "cidr" {
   description = "Main CIDR"
