@@ -1,0 +1,20 @@
+---
+- name: create a VPC
+  hosts:
+    - localhost
+  tasks:
+    - name: create VPC with subnets
+      amazon.aws.ec2_vpc_net:
+        name: "gdcjmcm_vpc"
+        state: present
+        region: eu-central-1
+        cidr_block: 10.0.0.0/23
+        aws_access_key: gdcjmcm
+        tags: 
+          name: "1st try"
+          group: "gdcjmcm-ansible"
+      register: vpc
+
+    - set_fact: vpc_id={{ vpc.vpc_id }}  
+
+...
