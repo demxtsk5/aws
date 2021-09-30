@@ -7,6 +7,7 @@ profile: default
 tag_name: 1st try
 tag_group: gdcjmcm-ansible
 pub_net: 10.0.0.0/24
+pri_net: 10.0.1.0/24
 
 sg_name: gdcjmcm_sg
 sg_region: eu-central-1

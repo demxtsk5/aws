@@ -7,6 +7,19 @@
     - ./tmp_vpc_variables.yaml
 
   tasks:
+
+    - name: delete pub subnet
+      amazon.aws.ec2_vpc_subnet:
+        vpc_id: "{{ vpc_id }}"
+        cidr: "{{ pub_net }}"
+        state: absent
+
+    - name: delete pri subnet
+      amazon.aws.ec2_vpc_subnet:
+        vpc_id: "{{ vpc_id }}"
+        cidr: "{{ pri_net }}"
+        state: absent                
+
     - name: delete routing table
       community.aws.ec2_vpc_route_table:
         route_table_id: "{{ rtp_id }}"
@@ -14,14 +27,17 @@
         region: "{{ sg_region }}"
         lookup: id
         state: absent
+
     - name: delete internet gateway   
       community.aws.ec2_vpc_igw:
         vpc_id: "{{ vpc_id }}"
         state: absent
+
     - name: delete SGs
       amazon.aws.ec2_group:
         name: "{{ sg_name }}"
         state: absent
+
     - name: delete VPC with subnets
       amazon.aws.ec2_vpc_net:
         name: "{{ vpc_name }}"

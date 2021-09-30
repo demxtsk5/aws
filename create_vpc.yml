@@ -68,6 +68,26 @@
         tags:
           name: gdcjmcm_igw_ansible
       register: igw_var
+    
+    - name: create pub subnet
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc_var.vpc.id }}"
+        cidr: "{{ pub_net }}"
+        map_public: true
+        tags:
+          name: gdcjmcm_pub_subnet_ansible
+      register: pub_net_var
+
+    - name: create pri subnet
+      amazon.aws.ec2_vpc_subnet:
+        state: present
+        vpc_id: "{{ vpc_var.vpc.id }}"
+        cidr: "{{ pri_net }}"
+        map_public: true
+        tags:
+          name: gdcjmcm_pri_subnet_ansible
+      register: pri_net_var
 
     - name: create routing table
       community.aws.ec2_vpc_route_table:
@@ -87,5 +107,7 @@
     - name: write rtb id into file
       lineinfile:
         path: ./tmp_vpc_variables.yaml
-        line: "\n rtp_id: {{ rtp_var.route_table.route_table_id }}"      
+        line: "\n rtp_id: {{ rtp_var.route_table.route_table_id }}"
+
+        
 ...                 
