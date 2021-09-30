@@ -1,0 +1,8 @@
+---
+vpc_name: gdcjmcm_vpc_by_ansible
+region_name: eu-central-1
+ip_block: 10.0.0.0/23
+key_name: gdcjmcm
+profile: default
+tag_name: 1st try
+tag_group: gdcjmcm-ansible
