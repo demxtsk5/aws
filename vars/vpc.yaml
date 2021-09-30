@@ -8,6 +8,9 @@ tag_name: 1st try
 tag_group: gdcjmcm-ansible
 pub_net: 10.0.0.0/24
 pri_net: 10.0.1.0/24
+ami: "ami-07df274a488ca9195"
+inst_type: t2.micro
+keypair: gdcjmcm
 
 sg_name: gdcjmcm_sg
 sg_region: eu-central-1

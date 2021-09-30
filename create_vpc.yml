@@ -50,16 +50,16 @@
           - proto: tcp
             from_port: 22 
             to_port: 22
-            cidr_ip: "10.0.0.0/24"
+            cidr_ip: "0.0.0.0/0"
           - proto: tcp
             from_port: 80 
             to_port: 80
-            cidr_ip: "10.0.0.0/24"
+            cidr_ip: "0.0.0.0/0"
           - proto: icmp
             from_port: -1
             to_port: -1
-            cidr_ip: "10.0.0.0/24"
-      register: sg_var       
+            cidr_ip: "0.0.0.0/0"
+      register: sg_var
 
     - name: create internet gateway   
       community.aws.ec2_vpc_igw:
@@ -109,5 +109,24 @@
         path: ./tmp_vpc_variables.yaml
         line: "\n rtp_id: {{ rtp_var.route_table.route_table_id }}"
 
-        
+    - name: Create EC2 server
+      community.aws.ec2_instance:
+        name: "webserver"
+        image_id: "{{ ami }}"
+        instance_type: "{{ inst_type }}"
+        region: "{{ region_name }}"
+        security_group: "{{ sg_var.group_id }}"
+        vpc_subnet_id: "{{ pub_net_var.subnet.id }}"
+        key_name: "{{ keypair }}"
+        network:
+          assign_public_ip: true
+        tags:
+          name: gdcjmcm_ansible     
+      register: ec2_var
+
+    - name: write ec2 id into file
+      lineinfile:
+        path: ./tmp_vpc_variables.yaml
+        line: "\n inst_id: {{ ec2_var.instance_ids }}"
+
 ...                 

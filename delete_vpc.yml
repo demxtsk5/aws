@@ -7,7 +7,10 @@
     - ./tmp_vpc_variables.yaml
 
   tasks:
-
+    - name: delete instance
+      community.aws.ec2_instance:
+        instance_ids: "{{ inst_id }}"
+        state: absent
     - name: delete pub subnet
       amazon.aws.ec2_vpc_subnet:
         vpc_id: "{{ vpc_id }}"
