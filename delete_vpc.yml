@@ -7,6 +7,13 @@
     - ./tmp_vpc_variables.yaml
 
   tasks:
+    - name: delete routing table
+      community.aws.ec2_vpc_route_table:
+        route_table_id: "{{ rtp_id }}"
+        vpc_id: "{{ vpc_id }}"
+        region: "{{ sg_region }}"
+        lookup: id
+        state: absent
     - name: delete internet gateway   
       community.aws.ec2_vpc_igw:
         vpc_id: "{{ vpc_id }}"

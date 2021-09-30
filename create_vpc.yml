@@ -12,7 +12,7 @@
         state: absent
   
   tasks:
-    - name: create VPC with subnets
+    - name: create VPC
       amazon.aws.ec2_vpc_net:
         name: "{{ vpc_name }}"
         state: present
@@ -67,5 +67,25 @@
         state: present
         tags:
           name: gdcjmcm_igw_ansible
-      register: igw_var    
-...                  
+      register: igw_var
+
+    - name: create routing table
+      community.aws.ec2_vpc_route_table:
+        vpc_id: "{{ vpc_var.vpc.id }}"
+        region: "{{ sg_region }}"
+        tags:
+          name: gdcjmcm_rtb_ansible
+        subnets:
+          - "{{ pub_net }}"
+        routes:
+          - dest: "0.0.0.0/0"    
+            gateway_id: "{{ igw_var.gateway_id }}"
+        tags:
+          name: gdcjmcm_rtb_ansible
+      register: rtp_var
+
+    - name: write rtb id into file
+      lineinfile:
+        path: ./tmp_vpc_variables.yaml
+        line: "\n rtp_id: {{ rtp_var.route_table.route_table_id }}"      
+...                 
