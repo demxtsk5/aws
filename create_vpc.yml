@@ -1,5 +1,5 @@
 ---
-- name: b
+- name: IaaC
   hosts:
     - localhost
   vars_files:
@@ -19,4 +19,30 @@
       register: vpc
     - debug:
         msg: "{{ vpc.vpc.id }}"
-...
+
+    - name: create security groups
+      amazon.aws.ec2_group:
+        name: "{{ sg_name }}"
+        vpc_id: "{{ vpc.vpc.id }}"
+        region: "{{ sg_region }}"
+        aws_profile: "{{ profile }}"
+        description: "{{ sg_desc }}"
+        rules_egress:
+          -  proto: -1
+             from_port: 0
+             to_port: 0
+             cidr_ip: "0.0.0.0/0"
+        rules:
+          - proto: tcp
+            from_port: 22 
+            to_port: 22
+            cidr_ip: "10.0.0.0/24"
+          - proto: tcp
+            from_port: 80 
+            to_port: 80
+            cidr_ip: "10.0.0.0/24"
+          - proto: icmp
+            from_port: -1
+            to_port: -1
+            cidr_ip: "10.0.0.0/24"                      
+      

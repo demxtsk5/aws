@@ -5,11 +5,15 @@
   vars_files:
     - ./vars/vpc.yaml 
   tasks:
+    - name: delete SGs
+      amazon.aws.ec2_group:
+        name: "{{ sg_name }}"
+        state: absent
     - name: delete VPC with subnets
       amazon.aws.ec2_vpc_net:
         name: "{{ vpc_name }}"
         state: absent
         region: "{{ region_name }}"
         aws_profile: "{{ profile }}"
-        cidr_block: "{{ ip_block }}"
+        cidr_block: "{{ ip_block }}"    
 ...
