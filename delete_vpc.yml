@@ -4,7 +4,13 @@
     - localhost
   vars_files:
     - ./vars/vpc.yaml 
+    - ./tmp_vpc_variables.yaml
+
   tasks:
+    - name: delete internet gateway   
+      community.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc_id }}"
+        state: absent
     - name: delete SGs
       amazon.aws.ec2_group:
         name: "{{ sg_name }}"

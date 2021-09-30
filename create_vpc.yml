@@ -4,6 +4,13 @@
     - localhost
   vars_files:
     - ./vars/vpc.yaml
+  
+  pre_tasks:
+    - name: delete tmp var file
+      file:
+        path: ./tmp_vpc_variables.yaml
+        state: absent
+  
   tasks:
     - name: create VPC with subnets
       amazon.aws.ec2_vpc_net:
@@ -16,14 +23,21 @@
         tags: 
           name: "{{ tag_name }}"
           group: "{{ tag_group }}"
-      register: vpc
+      register: vpc_var
     - debug:
-        msg: "{{ vpc.vpc.id }}"
+        msg: "{{ vpc_var.vpc.id }}"
+
+    - name: write vpc id into file
+      lineinfile:
+        path: ./tmp_vpc_variables.yaml
+        line: "--- \n vpc_id: {{ vpc_var.vpc.id }}"
+        create: yes
+        mode: 0644
 
     - name: create security groups
       amazon.aws.ec2_group:
         name: "{{ sg_name }}"
-        vpc_id: "{{ vpc.vpc.id }}"
+        vpc_id: "{{ vpc_var.vpc.id }}"
         region: "{{ sg_region }}"
         aws_profile: "{{ profile }}"
         description: "{{ sg_desc }}"
@@ -44,5 +58,14 @@
           - proto: icmp
             from_port: -1
             to_port: -1
-            cidr_ip: "10.0.0.0/24"                      
-      
+            cidr_ip: "10.0.0.0/24"
+      register: sg_var       
+
+    - name: create internet gateway   
+      community.aws.ec2_vpc_igw:
+        vpc_id: "{{ vpc_var.vpc.id }}"
+        state: present
+        tags:
+          name: gdcjmcm_igw_ansible
+      register: igw_var    
+...                  
